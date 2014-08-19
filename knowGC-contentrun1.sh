@@ -2,8 +2,10 @@
 ##Source: http://wiki.bits.vib.be/index.php/Create_a_GC_content_track
 
 ##Descrption: Takes the fasta, 1) Generates Non-overlapping Sliding windows, 
-#       					   2) Checks if the Sliding windows has N's and ignores if is more than default
-# 							   3)Outputs the GC% content in each sliding window								
+#       		       2) Checks if the Sliding windows has N's and ignores if is more than default
+# 			       3)Outputs the GC% content in each sliding window
+
+#Dependencies: Bedtools,knowGC-contentHistogramrun2.pl (the other sister script in the same folder) 
 
 ##Script compiled by: Prakki Sai Rama Sridatta
 
