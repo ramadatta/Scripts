@@ -1,3 +1,7 @@
+#Author: Prakki Sai Rama Sridatta
+##Plotting Bins, Counts (number of sliding windows), Proportion
+# Should be placed in the same folder where knowGC-contentrun1.sh is run.
+# 
 
 $filename="$ARGV[0]";
 $min="$ARGV[1]";
