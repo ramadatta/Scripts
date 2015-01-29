@@ -1,25 +1,25 @@
 
-#KEGG-KAAS Table Generator
+#H2 KEGG-KAAS Table Generator
 
-#Intro
+# H3 Intro
 
 Many times, I had to submit either Nucleotide pr Protein sequence to KEGG KAAS and felt immense pain arranging the data in the usable and understandable format.
 Here is the script I wrote to understand and generate the Results, more easily, quickly in seconds.!!
 Hope this is useful for the community!!
 
-#Descrption:
+# H3 Descrption:
 
 This script makes a table taking collapsed file, query.ko files as the inputs after Kegg-KAAS run	and generates a table	
 
-#Dependencies: 
+# H3 Dependencies: 
 
 The folder running this script should also have the sister files
 
-#OUTPUT
+# H3 OUTPUT
 Two output files are generated;
 
-Final_General_Table.txt 
-============================
+# H3 Final_General_Table.txt 
+# H3 ============================
 
 PATHWAY|QUERY_SEQUENCES_WIT_HIT|MAPID|TOTAL_GENES_IN_PATHWAY|GENES_WITH_HIT|ENZYME_HIT
 
@@ -33,8 +33,8 @@ Biosynthesis_of_secondary_metabolites 4 map01110  1058  4 4
 
 Microbial_metabolism_in_diverse_environments  2 map01120  853 2 2
 
-Final_Specific_Table.txt 
-============================
+# H3 Final_Specific_Table.txt 
+# H3 ============================
 
 PATHWAY	QUERY_SEQUENCES_WIT_HIT	MAPID	TOTAL_GENES_IN_PATHWAY	GENES_WITH_HIT	ENZYME_HIT
 
@@ -61,9 +61,14 @@ Basal_transcription_factors	1	map03022	35	1	0
 Bile_secretion	3	map04976	58	2	1
 
 
-
+# H3 Table Header Descriptions 
 * PATHWAY - Pathway 
+
 QUERY_SEQUENCES_WIT_HIT	MAPID - How many sequences from the query had hit to this pathway?
+
 TOTAL_GENES_IN_PATHWAY - Actual number of genes in the pathway?
+
 GENES_WITH_HIT - How many of the genes out of total genes in the patway had got hit (by the query sequences)?
+
 ENZYME_HIT - How many of the genes which had hit were enzyme?
+
