@@ -7,7 +7,7 @@ Many times, I had to submit either Nucleotide pr Protein sequence to KEGG KAAS a
 Here is the script I wrote to understand and generate the Results, more easily, quickly in seconds.!!
 Hope this is useful for the community!!
 
-### Descrption:
+### Description:
 
 This script makes a table taking collapsed file, query.ko files as the inputs after Kegg-KAAS run	and generates a table	
 
