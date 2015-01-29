@@ -12,13 +12,13 @@ Two output files are generated;
 Final_General_Table.txt 
 ============================
 
-PATHWAY	QUERY_SEQUENCES_WIT_HIT	MAPID	TOTAL_GENES_IN_PATHWAY	GENES_WITH_HIT	ENZYME_HIT
+PATHWAY|QUERY_SEQUENCES_WIT_HIT|MAPID|TOTAL_GENES_IN_PATHWAY|GENES_WITH_HIT|ENZYME_HIT
 
 1. Metabolism					
 
 1.0 Global map
 
-Metabolic_pathways	13	map01100	2411	12	10
+Metabolic_pathways|13|map01100|2411|12|10
 
 
 Biosynthesis_of_secondary_metabolites	4	map01110	1058	4	4
