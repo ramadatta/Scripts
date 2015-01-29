@@ -18,7 +18,7 @@ fi
 
 GenPeptFile=$1 #Homo_sapiens.gp
 
-trimmed_GenPeptName=$(echo $GenPeptFile | cut -d "." -f1) #Salmo_salar
+trimmed_GenPeptName=$(echo $GenPeptFile | cut -d "." -f1) #Homo_sapiens
 
 RawFasta=$2 #Homo_sapiens.fasta
 
