@@ -16,9 +16,14 @@ PATHWAY	QUERY_SEQUENCES_WIT_HIT	MAPID	TOTAL_GENES_IN_PATHWAY	GENES_WITH_HIT	ENZY
 
 1. Metabolism					
 
-1.0 Global map					
+1.0 Global map
+
 Metabolic_pathways	13	map01100	2411	12	10
+
+
 Biosynthesis_of_secondary_metabolites	4	map01110	1058	4	4
+
+
 Microbial_metabolism_in_diverse_environments	2	map01120	853	2	2
 
 Final_Specific_Table.txt 
