@@ -1,0 +1,48 @@
+Input : 16 seq	
+
+
+1) Average Intron Length for all the contigs:
+grep '++' UniqueSeq_Datta_28Dec2014_vs_ALL_SequencherContigs.e2g.out | grep -Eo '[0-9]{0,}' | awk '{sum+=$0} END { print "Average = ",sum/NR}'
+Average =  1275.7
+
+2) To make intermediate file
+grep -B 1 -e '|' -e 'Query:' UniqueSeq_Datta_28Dec2014_vs_ALL_SequencherContigs.e2g.out | grep -v '|' | cut -d ":" -f 2 | sed 's/--//g' | sed '/^$/d' | sed '/.txt/s/^ />/g; /.fasta/s/^ />/g; s/^ //g; s/ >>>>  /;;;;P/g; s/  >>>> /P::::/g' >est2genome_intmedFile.txt
+
+3) Ran the perl script
+perl extractExon_Intron_stats.pl est2genome_intmedFile.txt
+
+open FH,"est2genome_intmedFile.txt";
+
+while(<FH>)
+{
+	if($_=~/^>.+(txt|fasta)$/)
+	{
+	print "\n$_";
+	}
+	else
+	{
+	chomp($_);
+	$_ =~ s/^\s+//; #remove leading spaces
+	$_ =~ s/\s+$//;
+	print "$_";
+	}
+	
+}
+
+
+4) For finding average exon lengths:
+sed -e 's/>>>>/\n/g' est2genome_intmedFile2.txt | sed '/^Target/d' | grep -v '>' | awk '{print length+1}' | awk '{sum+=$0} END { print "Average = ",sum/NR}'
+Average =  153.77
+
+5) Average number of Exons per gene:
+sed -e 's/>>>>/\n/g' est2genome_intmedFile2.txt | sed '/^Target/d' | grep -v '>' | awk '{print length+1}' | wc -l 
+139
+
+139/16 genes = 9 exons per gene on average
+
+6) Average number of Introns per gene:
+
+sed -e 's/>>>>/\n/g' est2genome_intmedFile2.txt | grep -c 'Target'
+123
+
+123/16 = 8 introns per gene on an average

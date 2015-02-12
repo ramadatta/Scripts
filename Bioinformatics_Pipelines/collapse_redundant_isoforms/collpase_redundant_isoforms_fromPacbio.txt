@@ -1,0 +1,129 @@
+      
+1) IsoSeq sequence files from Pacbio
+=================================
+
+Brain_1-2kb_ConsensusIsoforms.fasta  G1_2-3kb_ConsensusIsoforms.fasta  G3_3-6kb_ConsensusIsoforms.fasta     Testis_1-2kb_ConsensusIsoforms.fasta
+Brain_2-3kb_ConsensusIsoforms.fasta  G1_3-6kb_ConsensusIsoforms.fasta  Ovary_1-2kb_ConsensusIsoforms.fasta  Testis_2-3kb_ConsensusIsoforms.fasta
+Brain_3-6kb_ConsensusIsoforms.fasta  G3_1-2kb_ConsensusIsoforms.fasta  Ovary_2-3kb_ConsensusIsoforms.fasta  Testis_3-6kb_ConsensusIsoforms.fasta
+G1_1-2kb_ConsensusIsoforms.fasta     G3_2-3kb_ConsensusIsoforms.fasta  Ovary_3-6kb_ConsensusIsoforms.fasta
+
+2) Number of sequence in each library file
+=========================================
+
+$ grep -c '>' *kb_ConsensusIsoforms.fasta
+
+	Brain_1-2kb_ConsensusIsoforms.fasta:42063
+	Brain_2-3kb_ConsensusIsoforms.fasta:54310
+	Brain_3-6kb_ConsensusIsoforms.fasta:55066
+	G1_1-2kb_ConsensusIsoforms.fasta:44753
+	G1_2-3kb_ConsensusIsoforms.fasta:67172
+	G1_3-6kb_ConsensusIsoforms.fasta:55725
+	G3_1-2kb_ConsensusIsoforms.fasta:62279
+	G3_2-3kb_ConsensusIsoforms.fasta:35703
+	G3_3-6kb_ConsensusIsoforms.fasta:2373
+	Ovary_1-2kb_ConsensusIsoforms.fasta:59386
+	Ovary_2-3kb_ConsensusIsoforms.fasta:62528
+	Ovary_3-6kb_ConsensusIsoforms.fasta:6302
+	Testis_1-2kb_ConsensusIsoforms.fasta:137206
+	Testis_2-3kb_ConsensusIsoforms.fasta:130478
+	Testis_3-6kb_ConsensusIsoforms.fasta:5617
+           
+3) Changing the names in the IsoSeq fasta files
+===============================================
+               
+	sed -i 's/>/>Brain_1-2kb_/g' Brain_1-2kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G1_2-3kb_/g' G1_2-3kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G3_3-6kb_/g' G3_3-6kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Testis_1-2kb_/g' Testis_1-2kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Brain_2-3kb_/g' Brain_2-3kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G1_3-6kb_/g' G1_3-6kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Ovary_1-2kb_/g' Ovary_1-2kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Testis_2-3kb_/g' Testis_2-3kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Brain_3-6kb_/g' Brain_3-6kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G3_1-2kb_/g' G3_1-2kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Ovary_2-3kb_/g' Ovary_2-3kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Testis_3-6kb_/g' Testis_3-6kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G1_1-2kb_/g' G1_1-2kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>G3_2-3kb_/g' G3_2-3kb_ConsensusIsoforms.fasta
+	sed -i 's/>/>Ovary_3-6kb_/g' Ovary_3-6kb_ConsensusIsoforms.fasta
+
+
+4) Combine all the sequences from all libraries into one file
+==============================================================
+
+	cat *.fasta >Brain_G1_G3_Ova_Tes_ConsensusIsoforms.fasta
+
+	grep -c '>' Brain_G1_G3_Ova_Tes_ConsensusIsoforms.fasta: 820961
+
+	cat Brain_1-2kb_ConsensusIsoforms.fasta Brain_2-3kb_ConsensusIsoforms.fasta Brain_3-6kb_ConsensusIsoforms.fasta >Brain_ConsensusIsoforms.fasta
+
+	grep -c '>' Brain_ConsensusIsoforms.fasta: 151439
+
+
+
+5) Building Genome (Already done!!)
+====================================
+
+	gmap_build -D ./ -d L_RNA_scaffolder.GMAP.DB L_RNA_scaffolder.fasta 
+
+
+6) Mapping IsoSeq reads (STOPPED)
+======================
+
+----------------------------------time gmap -D ~/Genome_Seabass/17Pacbio_Scaffolded_assembly2/L_RNA_scaffolder.GMAP.DB/ -d L_RNA_scaffolder.GMAP.DB -f samse -n 0 -t 10 Brain_G1_G3_Ova_Tes_ConsensusIsoforms.fasta >Brain_G1_G3_Ova_Tes_ConsensusIsoforms.fasta.sam ----------------------------------
+
+time gmap -D ~/Genome_Seabass/17Pacbio_Scaffolded_assembly2/L_RNA_scaffolder.GMAP.DB/ -d L_RNA_scaffolder.GMAP.DB -f samse -n 0 -t 10 Brain_ConsensusIsoforms.fasta >Brain_ConsensusIsoforms.fasta.sam
+
+7) Sort the SAM File generated
+===============================
+
+sort -k 3,3 -k 4,4n Brain_ConsensusIsoforms.fasta.sam >Brain_ConsensusIsoforms.sorted.sam
+
+8) Collapse the IsoSeq transcripts based on alignment to reference genome (using default alignment coverage 99%, Identity 85%)
+=========================================================================
+
+collapse_isoforms_by_sam.py --input Brain_ConsensusIsoforms.fasta -s Brain_ConsensusIsoforms.sorted.sam -o Brain_ConsensusIsoforms_NonRedundant.fasta
+.....
+......
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Ignored IDs written to: Brain_ConsensusIsoforms_NonRedundant.fasta.ignored_ids.txt
+Output written to:
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.gff
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.group.txt
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.rep.fa
+Namespace(allow_extra_5exon=True, fq=False, input='Brain_ConsensusIsoforms.fasta', min_aln_coverage=0.99, min_aln_identity=0.85, prefix='Brain_ConsensusIsoforms_NonRedundant.fasta', sam='Brain_ConsensusIsoforms.sorted.sam')
+
+9) Total Non Redundant transcripts
+==================================
+cat Brain_ConsensusIsoforms_NonRedundant.fasta.ignored_ids.txt Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.group.txt | wc -l : 91210
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

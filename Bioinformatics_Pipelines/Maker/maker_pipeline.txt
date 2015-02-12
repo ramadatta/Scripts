@@ -1,0 +1,86 @@
+
+----------@@@@@@@@@@@@ STEP 1 @@@@@@@@@@@@----------
+
+#$pwd
+#37Maker_Test/Predict_Genes_CDS_usingMaker
+
+$ sh ~/Documents/maker/bin/maker -CTL
+
+$ ls
+13_teleost_RefSeq.prot.fasta  ALL_SequencherContigs_withoutCtg2492.oneline.fasta  Commands_used.txt  maker_bopts.ctl  maker_exe.ctl  maker_opts.ctl
+
+----------@@@@@@@@@@@@ STEP 2 @@@@@@@@@@@@----------
+
+Add the Information for the following fields
+
+genome=ALL_SequencherContigs_withoutCtg2492.oneline.fasta #genome sequence (fasta file or fasta embeded in GFF3 file)
+protein=13_teleost_RefSeq.prot.fasta #protein sequence file in fasta format (i.e. from mutiple oransisms)
+augustus_species=elephant_shark #Augustus gene prediction species model
+cpus=12 #max number of cpus to use in BLAST and RepeatMasker (not for MPI, leave 1 when using MPI)
+
+----------@@@@@@@@@@@@ STEP 3 @@@@@@@@@@@@----------
+
+export AUGUSTUS_CONFIG_PATH=~/Documents/augustus/config/
+
+Run Maker
+
+ sh ~/Documents/maker/bin/maker -fix_nucleotides
+
+..................
+
+Start_time: 1423646447
+End_time:   1423670459
+Elapsed:    24012
+
+real	400m13.252s
+user	1268m15.612s
+sys	13m59.144s
+
+
+----------@@@@@@@@@@@@ STEP 4 @@@@@@@@@@@@----------
+
+**Extracting transcripts and protein using fasta merge
+
+~/Documents/maker/bin/fasta_merge -d ALL_SequencherContigs_withoutCtg2492.oneline_master_datastore_index.log
+
+-rw-rw-r--   1 prakkisr prakkisr 434K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.transcripts.fasta ##Required
+-rw-rw-r--   1 prakkisr prakkisr 160K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.proteins.fasta
+-rw-rw-r--   1 prakkisr prakkisr 334K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.augustus_masked.transcripts.fasta
+-rw-rw-r--   1 prakkisr prakkisr 112K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.augustus_masked.proteins.fasta
+-rw-rw-r--   1 prakkisr prakkisr 9.9K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.non_overlapping_ab_initio.transcripts.fasta
+-rw-rw-r--   1 prakkisr prakkisr 4.2K Feb 12 10:12 ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.non_overlapping_ab_initio.proteins.fasta
+
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.augustus_masked.proteins.fasta:110
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.augustus_masked.transcripts.fasta:110
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.non_overlapping_ab_initio.proteins.fasta:14
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.non_overlapping_ab_initio.transcripts.fasta:14
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.proteins.fasta:291
+ALL_SequencherContigs_withoutCtg2492.oneline.all.maker.transcripts.fasta:291
+
+
+----------@@@@@@@@@@@@ STEP 5 @@@@@@@@@@@@----------
+
+Merge all the gff files.
+
+~/Documents/maker/bin/gff3_merge -d ALL_SequencherContigs_withoutCtg2492.oneline_master_datastore_index.log
+
+ALL_SequencherContigs_withoutCtg2492.oneline.all.gff
+
+----------@@@@@@@@@@@@ STEP 6 @@@@@@@@@@@@----------
+
+**Extracting genes using bedtools
+
+Generate a seperate gff file for Genes from the merged GFF file.
+
+grep 'maker gene' ALL_SequencherContigs_withoutCtg2492.oneline.all.gff >ALL_SequencherContigs_withoutCtg2492_GeneInfo.gff
+
+bedtools getfasta -fi ../ALL_SequencherContigs_withoutCtg2492.oneline.fasta -bed ALL_SequencherContigs_withoutCtg2492_GeneInfo.gff -fo ALL_SequencherContigs_withoutCtg2492.all.maker.augustus.genes.fasta
+
+----------@@@@@@@@@@@@ STEP 7 @@@@@@@@@@@@----------
+
+Go to the localhost directory, where the JBrowse is installed.
+
+sudo ~/Documents/maker/bin/./maker2jbrowse -d ~/Genome_Seabass/37Maker_Test/Predict_Genes_CDS_usingMaker/ALL_SequencherContigs_withoutCtg2492.oneline.maker.output/ALL_SequencherContigs_withoutCtg2492.oneline_master_datastore_index.log
+
+
+-----------------------------------------------------
