@@ -30,5 +30,5 @@ Having said that, I would still give a caution, because these are written accord
 
 So, if at all, my scripts and pipelines are helpful to you, please cite the original publication involved.  A really big thanks to Github for creating a platform to host our coding scripts. 
 
- <h4>Thank you!! Dhanyavaad!! Shukriya!! Nandri!! Dhanyavadamulu!! Happy coding!!
+ <h6>Thank you!! Dhanyavaad!! Shukriya!! Nandri!! Dhanyavadamulu!! Happy coding!!
 
