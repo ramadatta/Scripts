@@ -1,0 +1,88 @@
+      
+1) IsoSeq sequence files from Pacbio
+=================================
+
+prakkisr:G1$ ls -lh *.fasta
+-rw------- 1 prakkisr prakkisr 131M Feb  5 14:51 G1_1-2kb_ConsensusIsoforms.fasta
+-rw------- 1 prakkisr prakkisr 221M Feb  5 14:51 G1_2-3kb_ConsensusIsoforms.fasta
+-rw------- 1 prakkisr prakkisr 118M Feb  5 14:51 G1_3-6kb_ConsensusIsoforms.fasta
+
+2) Number of sequence in each library file
+=========================================
+
+prakkisr:G1$ grep -c '>' *.fasta
+G1_1-2kb_ConsensusIsoforms.fasta:44753
+G1_2-3kb_ConsensusIsoforms.fasta:67172
+G1_3-6kb_ConsensusIsoforms.fasta:55725
+           
+3) Combine all the sequences from all libraries into one file
+==============================================================
+
+	$ cat *kb_ConsensusIsoforms.fasta >G1_Combined_ConsensusIsoforms.fasta
+
+	$ grep -c '>' G1_Combined_ConsensusIsoforms.fasta: 167650
+
+4) Building Genome (Already done!!)
+====================================
+
+	gmap_build -D ./ -d L_RNA_scaffolder.GMAP.DB L_RNA_scaffolder.fasta 
+
+
+5) Mapping IsoSeq reads (STOPPED)
+======================
+
+time gmap -D ~/Genome_Seabass/17Pacbio_Scaffolded_assembly2/L_RNA_scaffolder.GMAP.DB/ -d L_RNA_scaffolder.GMAP.DB -f samse -n 0 -t 10 G1_Combined_ConsensusIsoforms.fasta >G1_Combined_ConsensusIsoforms.fasta.sam 
+
+7) Sort the SAM File generated
+===============================
+
+sort -k 3,3 -k 4,4n G1_Combined_ConsensusIsoforms.fasta.sam  >G1_Combined_ConsensusIsoforms.fasta.sorted.sam
+
+8) Collapse the IsoSeq transcripts based on alignment to reference genome (using default alignment coverage 99%, Identity 85%)
+=========================================================================
+
+collapse_isoforms_by_sam.py --input G1_Combined_ConsensusIsoforms.fasta -s G1_Combined_ConsensusIsoforms.fasta.sorted.sam -o G1_Combined_ConsensusIsoforms_NonRedundant.fasta
+.....
+......
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Ignored IDs written to: Brain_ConsensusIsoforms_NonRedundant.fasta.ignored_ids.txt
+Output written to:
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.gff
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.group.txt
+Brain_ConsensusIsoforms_NonRedundant.fasta.collapsed.rep.fa
+Namespace(allow_extra_5exon=True, fq=False, input='Brain_ConsensusIsoforms.fasta', min_aln_coverage=0.99, min_aln_identity=0.85, prefix='Brain_ConsensusIsoforms_NonRedundant.fasta', sam='Brain_ConsensusIsoforms.sorted.sam')
+
+9) Total Non Redundant transcripts from this sample
+==================================================
+cat *.ignored_ids.txt *.group.txt | wc -l 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
