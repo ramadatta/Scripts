@@ -24,11 +24,15 @@ THE SOFTWARE.
 
 <h3> Scripts
 
-I started my bioinformatics career in 2012 and am presently working as a bioinfomratics researcher/engineer. During my work I used to come across many challenges and tasks which are needed to accomplished either using open source software tools or writing my scripts for the analysis. It sometimes takes up, immense time just searching a tiny detail for starting our analysis and if you are biologist with little programming experience, it is really hard experience. So, since I am benefitted from the community, I felt it is also my duty to share my scripts and other important pipelines, which I used for my own analysis.
+I started my bioinformatics career in 2012 and am presently working as a bioinformatics researcher/engineer. During my work I used to come across many challenges and tasks which are needed to accomplished either using open source software tools or writing my own scripts for the analysis. It sometimes takes up, immense time just searching a tiny detail for starting our analysis and if you are biologist with little programming experience, it might not all be really easy. So, since I am benefitted from the bioinformatics community, I felt it is also my duty to share my scripts and other important pipelines, which I used for my own analysis.
 
-Having said that, I would still give a caution, because these are written according my requirements and are needed to be polished when applying to some other's data. SO, Please use these scripts at your own risk!! 
+Having said that, I would still give a caution, because these are written according my requirements and are needed to be polished when applying to some other's data. So, Please use these scripts at your own risk!! If at all, my scripts and pipelines are helpful to you, please cite the original publication if any software is involved rather than citing my page. A really big thanks to Github for creating a platform to host our coding scripts. 
 
-So, if at all, my scripts and pipelines are helpful to you, please cite the original publication involved.  A really big thanks to Github for creating a platform to host our coding scripts. 
-
- <h6>Thank you!! Dhanyavaad!! Shukriya!! Nandri!! Dhanyavadamulu!! Happy coding!!
+ <h6>Thank you!!
+ <h6>Dhanyavaad!! 
+ <h6>Shukriya!!
+ <h6>Nandri!! 
+ <h6>Dhanyavadamulu!!
+ 
+<h6>Happy coding!!
 
