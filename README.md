@@ -28,11 +28,5 @@ I started my bioinformatics career in 2012 and am presently working as a bioinfo
 
 Having said that, I would still give a caution, because these are written according my requirements and are needed to be polished when applying to some other's data. So, Please use these scripts at your own risk!! If at all, my scripts and pipelines are helpful to you, please cite the original publication if any software is involved rather than citing my page. A really big thanks to Github for creating a platform to host our coding scripts. 
 
- <h6>Thank you!!
- <h6>Dhanyavaad!! 
- <h6>Shukriya!!
- <h6>Nandri!! 
- <h6>Dhanyavadamulu!!
- 
-<h6>Happy coding!!
+ <h6>Thank you!! <h6>Happy coding!!
 
