@@ -161,7 +161,7 @@ print "Finished generating Process_Transcript_Enzyme_Kegg_pathway.txt file1, STE
 			while(<GenCount>)
 			{
 			#print "$_\n";
-				if($_=~/^(\d+)\t(map\d+)\_(\w+)\.txt$/)
+				if($_=~/^(\d+)\t(map\d+)\_?(\w+)\.txt$/)
 				{
 				$MAPID_NO_TRAN="$2\t$1";
 				#print "$MAPID_NO_TRAN\n";

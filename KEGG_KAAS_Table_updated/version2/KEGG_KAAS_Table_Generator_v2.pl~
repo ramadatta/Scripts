@@ -5,7 +5,7 @@
 ##Date: December 13,2013
 ##Edited for update on: August 11,2015 
 ##Email: prakkisr@tll.org.sg // ramadatta.88@gmail.com
-## Usage: #perl KEGG_KAAS_Table_Generator_v2.pl <collapsed.txt> <query.ko>
+## Usage: perl KEGG_KAAS_Table_Generator_v2.pl <collapsed.txt> <query.ko>
 ###########################################################################################################################
 
 #############################################
@@ -161,10 +161,10 @@ print "Finished generating Process_Transcript_Enzyme_Kegg_pathway.txt file1, STE
 			while(<GenCount>)
 			{
 			#print "$_\n";
-				if($_=~/^(\d+)\t(map\d+)\_(\w+)\.txt$/)
+				if($_=~/^(\d+)\t(map\d+)\_?(\w+)\.txt$/)
 				{
 				$MAPID_NO_TRAN="$2\t$1";
-				#print "$MAPID_NO_TRAN\n";
+				print "$MAPID_NO_TRAN\n";
 				$GeneCountHash{$3}="$MAPID_NO_TRAN";
 				}
 			}
