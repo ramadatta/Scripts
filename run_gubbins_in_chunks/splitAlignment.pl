@@ -1,19 +1,17 @@
-#$input="test.fa";
-#print "input file is $input\n"; 
+#Author: Prakki Sai Rama Sridatat
+#Date: 08/11/2017
+##Script: Breaks the aligned fasta file into smaller chunks from position1 to position2 (1 to 100, 100 to 200,...etc). The default used chunk size to break is 500KB.
+## syntax : perl splitAlignment.pl
 use POSIX;
-#system "cat test.fa | paste - - | awk 'BEGIN{OFS=FS=" "}{gsub(/.{4}/,"&|",$2)}1' >test2_pipes.fa";
-#$size=4;
-$filename="seqnew.oneline.fa";
-#system "rm test2_pipes.fa_*"; 
+$filename="seqnew.oneline.fa"; ##Input Aligned fasta file (after alignment)
 
 open FH,"$filename";
-#$chunkSize=500000;
 
 while(<FH>)
 {
 	$header=$_;
 	$seq=<FH>;
-	@splitSeq=unpack("(A500000)*", $seq);						#print "$seq\n$#splitSeq\n";
+	@splitSeq=unpack("(A500000)*", $seq); ##Breaks into 500 KB sequence length
 	for($i=0;$i<=$#splitSeq;$i++)
 		{
 		open FH2,">>$filename\_$i";
