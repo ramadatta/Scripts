@@ -6,7 +6,7 @@
 
 #Description: This script compares two genome sequences and outputs unique regions (> 1kb) for both files 
 
-##Usage: bash unique_regions.sh <file1.fasta> <file2.fasta>
+##Usage: bash UniqGnomicRegions.sh <file1.fasta> <file2.fasta>
 
 
 fasta1=$1
