@@ -100,7 +100,7 @@ for($i=0;$i<=$#plasmidseeker_file;$i++)
 			print "Final list of IDs to grab from NCBI is : $concat\n";
 			$curl = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id="."$concat"."&rettype=fasta&retmode=text"; ##use eutils to download the accession from NCBI	
 			`curl "$curl" >$tmp\_PlasmidCluster_TophitsSeqs.fasta`;
-			`sed -i -e 's/ /_/g' $tmp\_TophitsSeqs.fasta -e 's/;.*//g'`; ##long header names will cause segmentation fault
+			`sed -i -e 's/ /_/g' $tmp\_PlasmidCluster_TophitsSeqs.fasta -e 's/;.*//g'`; ##long header names will cause segmentation fault
 
 `rm tmp_*`;
 
