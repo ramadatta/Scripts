@@ -18,11 +18,6 @@ chomp($_);
 my %counts;
 ++$counts{$_} for @str1; ##Collecting all the elements from str array and assign a number incrementally
 
-foreach $key (keys %counts)
-{
-print "variable:$_,key:$key,value:$counts{$key}\n";
-}
-
 my @common = grep { --$counts{$_} >= 0 } @str2; ## until the values of all the elements are found to be greater than or equal to zero, the elements in the @str1 are checked in @str2, and common elements are collected in @common array
 
 foreach $tmp (@common) ##reformatting so that the common elements are combined with comma
