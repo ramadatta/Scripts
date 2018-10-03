@@ -5,6 +5,12 @@
 # Author: Prakki Sai Rama Sridatta
 # Date: Oct 3, 2018
 
+##_______________________SAMPLE_DATA______________________________
+#file1	blaNDM-5,	blaNDM-5,
+#file2	aac(3)-IId,armA,blaDHA-1,blaNDM-1,blaTEM-1B,mph(E),msr(E),sul1,	aac(3)-IId,armA,blaCMY-4,blaDHA-1,blaMAL-1,blaNDM-1,blaTEM-1B,mph(E),msr(E),sul1,
+#file3	aac(3)-IId,armA,blaDHA-1,blaNDM-1,blaTEM-1B,mph(E),msr(E),sul1,	aac(3)-IId,armA,blaDHA-1,blaNDM-1,blaOXY-2-2,blaTEM-1B,mph(E),msr(E),sul1,
+
+
 open FH,"data.txt";
 
 while(<FH>)
