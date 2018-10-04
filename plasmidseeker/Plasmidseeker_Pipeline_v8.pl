@@ -1,4 +1,4 @@
-## This v7 script is latest plasmidseeker script. To run just type: time perl PlasmidAssignment_Pipeline_v5.pl 
+## This v8 script is latest plasmidseeker script. To run just type: time perl PlasmidAssignment_Pipeline_v5.pl 
 
 ## Prior to running the script, the working directory should contain a seperate folder for each sample with fastq files (fastq.gz or fastq) files, fasta file, contigSeq file (cp gene containing contig)
 
