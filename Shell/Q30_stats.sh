@@ -39,4 +39,4 @@ Average_NumberofBases_with_MinQ30_per_Read=`echo "scale=0; $Bases_withminQ30_inS
 echo "$filename	$TotalBases_inSample	$Bases_withminQ30_inSample	$Pcnt_Bases_inSample_withMinQ30	$TotalReads_inSample	$AverageBases_per_Read	$Average_NumberofBases_with_MinQ30_per_Read"
 
 ##line to be prepended
-#echo "Sample FileName	echo "Total Bases in Sample	Total Bases in the sample with the minimum Qscore 30	Percentage of High Quality (with Q-score (>=Q30)) Bases in the sample	Total reads in the sample	Average number of bases per read in the sample	Average number of High Quality bases (with Q-score (>=Q30)) per read in the sample"
+#echo "Sample FileName  Total Bases in Sample	Total Bases in the sample with the minimum Qscore 30	Percentage of High Quality (with Q-score (>=Q30)) Bases in the sample	Total reads in the sample	Average number of bases per read in the sample	Average number of High Quality bases (with Q-score (>=Q30)) per read in the sample"
