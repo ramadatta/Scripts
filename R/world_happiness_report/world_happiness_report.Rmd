@@ -1,0 +1,262 @@
+---
+title: "happiness dataset - Exploratory statistics with R"
+output: 
+   #rmarkdown: github_document
+   html_document: 
+   df_print: default
+   highlight: tango
+   number_sections: yes
+   theme: cosmo
+   toc: yes
+   keep_md: true
+editor_options: 
+  chunk_output_type: console
+  
+---
+
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width=80)
+knitr::opts_chunk$set(comment = "", warning = FALSE, message = FALSE, echo = TRUE, tidy = TRUE, size="small")
+#read_chunk("some/script/I/want/to/load.R")
+```
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+
+# About the dataset
+The data is available at: <https://www.kaggle.com/unsdsn/world-happiness>
+
+##Context
+
+The World Happiness Report is a landmark survey of the state of global happiness. The first report was published in 2012, the second in 2013, the third in 2015, and the fourth in the 2016 Update. The World Happiness 2017, which ranks 155 countries by their happiness levels, was released at the United Nations at an event celebrating International Day of Happiness on March 20th. The report continues to gain global recognition as governments, organizations and civil society increasingly use happiness indicators to inform their policy-making decisions. Leading experts across fields – economics, psychology, survey analysis, national statistics, health, public policy and more – describe how measurements of well-being can be used effectively to assess the progress of nations. The reports review the state of happiness in the world today and show how the new science of happiness explains personal and national variations in happiness.
+
+##Inspiration
+
+What countries or regions rank the highest in overall happiness and each of the six factors contributing to happiness? How did country ranks or scores change between the 2015 and 2016 as well as the 2016 and 2017 reports? Did any country experience a significant increase or decrease in happiness?
+
+##Exploratory statistics
+
+Let us start with exploratory statistics with data. Since this data is already clean. Let us import it into a dataframe called "df2015".
+
+```{r cars}
+require(ggplot2)
+require(reshape2)
+
+df2015 <- read.csv("2015.csv")
+
+head(df2015)
+
+##Countries with highest, lowest Economy GDP per capita
+
+maxEco <- max(df2015$Economy..GDP.per.Capita.)
+subset(df2015[c(1,6)], Economy..GDP.per.Capita. == maxEco) ##this will return the country and Economy 
+df2015[df2015$Economy..GDP.per.Capita. == maxEco, ] ##this will return the country and Economy - not using subset
+subset(df2015, Economy..GDP.per.Capita. == maxEco) ##this will return all the details of the country with highest  Economy 
+
+df2015[df2015$Economy..GDP.per.Capita. == maxEco, ]
+
+head(df2015[c(1,6)]) ## Selecting multiple columns
+
+head(df2015[ ,c(1,6)]) ## Selecting multiple columns - Same as df2015[c(1,6)]
+
+minEco <- min(df2015$Economy..GDP.per.Capita.)
+subset(df2015[c(1,6)], Economy..GDP.per.Capita. == minEco) ##Country with lowest Economy GDP per Capita
+
+##Countries with highest,lowest Family
+
+maxFamily <- max(df2015$Family)
+subset(df2015[c(1,7)], Family == maxFamily) ##this will return highest score of the family and the corresponding country
+subset(df2015[c("Country","Family")], Family == maxFamily) ##this will return highest score of the family and the corresponding country
+
+
+minFamily <- min(df2015$Family)
+subset(df2015[c(1,7)], Family == minFamily) ##this will return lowest score of the family and the corresponding country
+
+##Countries with highest,lowest Trust Govt Correpution
+maxTrust <- max(df2015$Trust..Government.Corruption.)
+subset(df2015[c("Country","Trust..Government.Corruption.")], Trust..Government.Corruption. == maxTrust) ##this will return highest score of the Trust and the corresponding country
+
+minTrust <- min(df2015$Trust..Government.Corruption.)
+subset(df2015[c("Country","Trust..Government.Corruption.")], Trust..Government.Corruption. == minTrust) ##this will return lowest score of the Trust and the corresponding country
+
+##Countries with highest,lowest Genorosity
+maxGenerosity <- max(df2015$Generosity)
+subset(df2015[c("Country","Generosity")], Generosity == maxGenerosity) ##this will return highest score of the Generosity and the corresponding country
+
+minGenerosity <- min(df2015$Generosity)
+subset(df2015[c("Country","Generosity")], Generosity == minGenerosity) ##this will return lowest score of the Generosity and the corresponding country
+
+##Countries with highest,lowest Healthlife expectancy
+
+maxHLE <- max(df2015$Health..Life.Expectancy.)
+subset(df2015[c("Country","Health..Life.Expectancy.")], Health..Life.Expectancy. == maxHLE) ##this will return highest score of the Health..Life.Expectancy. and the corresponding country
+
+minHLE <- min(df2015$Health..Life.Expectancy.)
+subset(df2015[c("Country","Health..Life.Expectancy.")], Health..Life.Expectancy. == minHLE) ##this will return lowest score of the Health..Life.Expectancy. and the corresponding country
+
+##Countries with highest,lowest Freedom
+maxFreedom <- max(df2015$Freedom)
+subset(df2015[c("Country","Freedom")], Freedom == maxFreedom) ##this will return highest score of the Freedom and the corresponding country
+
+minFreedom <- min(df2015$Freedom)
+subset(df2015[c("Country","Freedom")], Freedom == minFreedom) ##this will return lowest score of the Freedom and the corresponding country
+
+#is there is correlation between region and freedom
+head(subset(df2015[,c("Region","Freedom")])) ## we have multiple Region which are same. So, let's take average of the regions which are same. 
+#This can be done using aggregate function. Check this link for more details <https://stackoverflow.com/questions/21982987/mean-per-group-in-a-data-frame>
+dfRegFre <- aggregate(df2015[,c("Freedom")], list(df2015$Region), mean)
+
+names(dfRegFre) <- c("Region","Freedom") ###Add the header to the dataframe
+
+dfRegFre
+
+#Since Regions is categorical variable, we cannot find correlation
+
+
+
+#is there is correlation between region and health life expectancy
+
+#is there is correlation between country and Economy
+#is there is correlation between country and Genorosity
+#is there is correlation between country and freedom
+#is there is correlation between country and health life expectancy
+
+#is there is correlation between Happiness score and Economy of the countries?
+##df2015$Economy..GDP.per.Capita.
+dfHapp_vs_Ecnmy <- (subset(df2015[,c("Country","Happiness.Score","Economy..GDP.per.Capita.")])) 
+names(dfHapp_vs_Ecnmy) <- c("Country","Happiness Score", "Economy GDP Per Capita")
+head(dfHapp_vs_Ecnmy)
+plot(dfHapp_vs_Ecnmy) ##bit confusing plot
+class(dfHapp_vs_Ecnmy)
+
+#Let's try scatter plot from the original data frame df2015
+plot(df2015$Happiness.Score, df2015$Economy..GDP.per.Capita.)
+
+#Let us colorize the plots 
+plot(df2015$Happiness.Score, df2015$Economy..GDP.per.Capita., col ="chocolate", type = "p", pch = 8, main = "R Scatter Plot", xlab = "Happiness.Score", ylab = "Economy.GDP.per.Capita") #This shows positive correlation
+
+##Let's fit the data using linear regression model 
+#Check this youtube link for more better understanding: <https://www.youtube.com/watch?v=hokALdIst8k>
+simple.Regresssion <- lm(df2015$Economy..GDP.per.Capita.~df2015$Happiness.Score)
+summary(simple.Regresssion) ## R-square =0.60, p <0.05 shows there is significant correlation between both happiness and economy of the country, Adjusted R-Sqaure is more used for Multiple regressions
+
+##Let's plot Regression line
+#abline(lm(df2015$Happiness.Score~df2015$Economy..GDP.per.Capita.)
+abline(lm(df2015$Economy..GDP.per.Capita.~df2015$Happiness.Score), col = "red", lwd = 2) 
+
+##Let do Multiple Regression now
+
+df <- df2015[c("Happiness.Score","Economy..GDP.per.Capita.","Generosity")]
+head(df)
+plot(df)
+
+multiple.Regresssion <- lm(df2015$Economy..GDP.per.Capita.~df2015$Happiness.Score + df2015$Generosity)
+summary(multiple.Regresssion)
+
+##Since pvalue < 0.05 and adjusted R-Square is 0.63. It means that Economy and happiness, Generosity have direct linear relationship between them
+
+#But it would still be nice if the data points are colored according to their Regions (since countries are all unique). Let's try!
+
+
+library(dplyr)
+library(formattable)
+library(ggplot2)
+library(ggthemes)
+library(viridis)
+
+open_data_happiness <- df2015[c("Region", "Happiness.Score","Generosity")]
+
+ggplot(open_data_happiness, 
+  aes(x = Happiness.Score, 
+      y = Generosity)) +
+  geom_point(aes(colour = Region),
+             size = 2) +
+  geom_smooth(method="lm") +
+  labs(x = "Happiness.Score",
+       y = "Generosity",
+       title = "Are open data friendly countries happy countries?",
+       subtitle = "Data openness and happiness by country in 2015") +
+  scale_color_viridis(discrete = T) +
+  theme_minimal() +
+  theme(text = element_text(size=16))
+
+#this shows that Western Europe countries are happy and are more Generous, on the other hand sub-saharan people are less happy and less generous.
+
+#But it would be interesting to make a global map based on freedom score.
+
+#To work on this in the coming days <https://www.r-bloggers.com/interactive-maps-for-the-web-in-r/>. Let's try chorpleth.
+
+library(rworldmap)
+
+#create a map-shaped window
+ddf <- subset(df2015[c("Country","Freedom")])
+class(ddf)
+mapDevice('x11')
+#join to a coarse resolution map
+spdf <- joinCountryData2Map(ddf, joinCode="NAME", nameJoinColumn="Country")
+
+mapCountryData(spdf, nameColumnToPlot="Freedom", catMethod="fixedWidth")
+
+#With different colors
+mapCountryData(spdf, nameColumnToPlot="Freedom", colourPalette=c('red','orange','blue','green'), catMethod="fixedWidth")
+
+# The more yellowish, the country has more freedom.. Chorpleth maps are Cool!
+ mapCountryData(spdf, nameColumnToPlot="Freedom", colourPalette=c('red','orange','blue','green','yellow'), catMethod="fixedWidth") #This takes a while to load. SO, commenting this code for a while/
+
+#mapCountryData(spdf, nameColumnToPlot="Freedom", colourPalette="terrain", catMethod="fixedWidth")
+#mapCountryData(spdf, nameColumnToPlot="Freedom", colourPalette="palette", catMethod="fixedWidth")
+
+#More information about rworldmap cab be found here: <https://cran.r-project.org/web/packages/rworldmap/vignettes/rworldmap.pdf>
+
+# I want to generate box plot for all the columns in one chart. Let's do it!
+
+library(ggplot2)
+
+ggplot(stack(df2015), aes(x = ind, y = values)) + geom_boxplot() ##problems : 1) Happiness column have bigger values. so bigger plot and all the rest are small 2) Axis label names are overlapped.
+library(dplyr)
+##dropping certain columns. Let's drop both columns "Happiness.Rank", "Happiness.Score". Problem 1 solved.
+df2_2015 <- df2015[, !names(df2015) %in% c("Happiness.Rank", "Happiness.Score")] 
+head(df2_2015)
+ggplot(stack(df2_2015), aes(x = ind, y = values)) + geom_boxplot() +labs(x = "Criteria",
+       y = "Value",
+       title = "Box plot without columns with high values",
+       subtitle = "Still prblem with axis labels!! Hey look at this minimal theme") +
+  scale_color_viridis(discrete = T) +
+  theme_minimal() +
+  theme(text = element_text(size=16))
+
+ggplot(stack(df2_2015), aes(x = ind, y = values)) + geom_boxplot() +labs(x = "Criteria",
+       y = "Value",
+       title = "Box plot without columns with high values",
+       subtitle = "Still prblem with axis labels!! Hey look at this gray theme") +
+  scale_color_viridis(discrete = T) +
+  theme_gray() +
+  theme(text = element_text(size=16))
+
+ggplot(stack(df2_2015), aes(x = ind, y = values)) + geom_boxplot() +labs(x = "Criteria",
+       y = "Value",
+       title = "Box plot without columns with high values",
+       subtitle = "Still prblem with axis labels!! Hey look at this dark theme") +
+  scale_color_viridis(discrete = T) +
+  theme_dark() +
+  theme(text = element_text(size=16))
+
+ggplot(stack(df2_2015), aes(x = ind, y = values, color = "blue")) + geom_boxplot() +labs(x = "Criteria",
+       y = "Value",
+       title = "Box plot without columns with high values",
+       subtitle = "Still prblem with axis labels!! Dark theme. Let ggplot choose color") +
+  scale_fill_viridis() +
+  theme_dark() +
+  theme(text = element_text(size=16))
+##More problems - Instead of value, can I make it percentage on the y-axis?
+
+
+#dfRegFre <- aggregate(df2015[,c("Freedom")], list(df2015$Region), mean)
+#is there is correlation between Happiness score and Genorosity
+#is there is correlation between Happiness score and freedom
+#is there is correlation between Happiness score and health life expectancy
+
+
+```
