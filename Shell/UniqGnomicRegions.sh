@@ -32,7 +32,11 @@ echo "BLAST DONE!!"
 
 echo "EXTRACTING UNIQUE REGIONS FROM $fasta1!!"
 
-bedtools merge -i <(cat "$fasta1"_vs_"$fasta2".blastResults.txt | cut -f1,8,9 | sort -nk2,2) >"$fasta1"_vs_"$fasta2".bedtools_merged.txt
+bedtools merge -i <(cat "$fasta1"_vs_"$fasta2".blastResults.txt | cut -f1,8,9 | sort -k1,1 -V -k2,2n -k3,3n | uniq) >"$fasta1"_vs_"$fasta2".bedtools_merged.txt
+
+#bedtools merge -i <(cat "$fasta1"_vs_"$fasta2".blastResults.txt | cut -f1,8,9 | sort -n -k1.11 -nk2,2) >"$fasta1"_vs_"$fasta2".bedtools_merged.txt
+
+#bedtools merge -i <(bedtools sort -i <(cat "$fasta1"_vs_"$fasta2".blastResults.txt | cut -f1,8,9)) >"$fasta1"_vs_"$fasta2".bedtools_merged.txt 
 
 ### Extracting unique region's coordinates from fasta1
 
@@ -42,7 +46,7 @@ bedtools complement -i "$fasta1"_vs_"$fasta2".bedtools_merged.txt -g "$fasta1".l
 
 ### Extracting unique regions from fasta 1
 
-bedtools getfasta -fi $fasta1 -bed "$fasta1".unique_gt1kb.regions.coords -fo "$fasta1".unique_gt1kb.regions.fasta
+bedtools getfasta -fi $fasta1 -bed "$fasta1".unique_gt1kb.regions.coords -fo "$fasta1".unique_gt1kb.regions_vs_"$fasta2".fasta
 
 echo "DONE!"
 
@@ -50,7 +54,11 @@ echo "DONE!"
 
 echo "EXTRACTING UNIQUE REGIONS FROM $fasta2!!"
 
-bedtools merge -i <(cat "$fasta2"_vs_"$fasta1".blastResults.txt | cut -f1,8,9 | sort -nk2,2) >"$fasta2"_vs_"$fasta1".bedtools_merged.txt
+bedtools merge -i <(cat "$fasta2"_vs_"$fasta1".blastResults.txt | cut -f1,8,9 | sort -k1,1 -V -k2,2n -k3,3n | uniq) >"$fasta2"_vs_"$fasta1".bedtools_merged.txt
+
+#bedtools merge -i <(cat "$fasta2"_vs_"$fasta1".blastResults.txt | cut -f1,8,9 | sort -n -k1.11 -nk2,2) >"$fasta2"_vs_"$fasta1".bedtools_merged.txt 
+
+#bedtools merge -i <(bedtools sort -i <(cat "$fasta2"_vs_"$fasta1".blastResults.txt | cut -f1,8,9)) >"$fasta2"_vs_"$fasta1".bedtools_merged.txt 
 
 ### Extracting unique region's coordinates from fasta2
 
@@ -60,11 +68,6 @@ bedtools complement -i "$fasta2"_vs_"$fasta1".bedtools_merged.txt -g "$fasta2".l
 
 ### Extracting unique regions from fasta 2
 
-bedtools getfasta -fi $fasta2 -bed "$fasta2".unique_gt1kb.regions.coords -fo "$fasta2".unique_gt1kb.regions.fasta
+bedtools getfasta -fi $fasta2 -bed "$fasta2".unique_gt1kb.regions.coords -fo "$fasta2".unique_gt1kb.regions_vs_"$fasta1".fasta
 
 echo "DONE!"
-
-
-
-
-
