@@ -96,16 +96,16 @@ echo "The Reference Suffix is: $Ref_Suffix"
 
 # High Quality SNP as mentioned in Stoesser ST131 Paper
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf & done
-	wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf; done
+	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP8/31: High Quality VCF files are generated! Next is Low Quality VCF file generation"
 	date
 	echo ""
 
 # Low Quality SNP as mentioned in Stoesser ST131 Paper
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf & done
-	wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf; done
+	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP9/31: Low Quality VCF files are generated! "
 	date
 	echo ""
@@ -180,7 +180,6 @@ echo "The Reference Suffix is: $Ref_Suffix"
 	echo "-------------------------------->STEP19/31: CONSENSUS sequences for all the samples generated! "
 	date
 	echo ""
-
 
 ###################---------------------------STOESSER'S METHOD FOR PADDING AND BEAST------------------------##################################
 
@@ -278,6 +277,8 @@ cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/BEAST_Dat
  
 # Count ATGC in the Pre-Gubbins Reference and Post Gubbins Reference, add that many number of A's, T's, G's, C's into each of the sample file and feed to BEAST
 
+	for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_Stoesser_PreGubbins_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}' >Invariant_Sites_CountATGC.txt
+
 	cmd=`for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_Stoesser_PreGubbins_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}'`
 	echo "-------------------------------->STEP27/31: Counting "
 	date
@@ -292,7 +293,7 @@ cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/BEAST_Dat
 
 # Removing the reference from the fasta file to input to BEAST #ids2Remove has reference sequence ID
 
-	grep  '>' ../ENT256_Nanopore.oneline.fasta | tr -d '>' | tr '=' '_' | tr -d ',' >ids2Remove.txt	
+	grep  '>' "$Ref_Suffix".oneline.fasta | tr -d '>' | tr '=' '_' | tr -d ',' >ids2Remove.txt	
 	awk 'BEGIN{while((getline<"ids2Remove.txt")>0)l[">"$1]=1}/^>/{f=!l[$1]}f' "$Gubbins_Suffix"_Stoesser_PreGubbins_withRef_Recom_masked_trimal.fasta >"$Gubbins_Suffix"_Stoesser_PreGubbins_withoutRef_Recom_masked_trimal.fasta
 	echo "-------------------------------->STEP29/31: Removed Reference Sequence for BEAST ANALYSIS!! "
 	date
@@ -324,5 +325,4 @@ cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/BEAST_Dat
 
 
 # time /storage/apps/beast/bin/beast -beagle -beagle_SSE EColi_Stoesser_CCgroup10_BEAST_withDates.xml
-: <<'END_COMMENT'
-END_COMMENT
+
