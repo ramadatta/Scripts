@@ -41,12 +41,13 @@ echo "The Reference Suffix is: $Ref_Suffix"
 
 # Mask the repeat regions so that while mapping the reads does not map the masked regions
 
-	repeat=`bedtools merge -i <(cat "$Ref_Suffix"_selfblastresults.txt | awk '{print $0,$5/$14}' | tail -n+2 | cut -f1,8,9 | sort -nk2,2) | awk '{print $0,$3-$2}' | awk '{sum+=$NF} END {print sum}'`
+	repeat=`bedtools merge -i <(cat "$Ref_Suffix"_selfblastresults.txt | awk '{print $1"\t"$8-1"\t"$9}' | tail -n+2 | sort -nk2,2) | awk '{print $0,$3-$2}' | awk '{sum+=$NF} END {print sum}'`
+
 	echo "-------------------------------->Note: Your Reference: "$Ref_Suffix".oneline.fasta have $repeat bases of repeats"
 	echo ""
 
 	echo "Masking the $repeat bases in your Reference: "$Ref_Suffix".oneline.fasta"
-	cat "$Ref_Suffix"_selfblastresults.txt | awk '{print $0,$5/$14}' | tail -n+2 | cut -f1,8,9 >"$Ref_Suffix".Repeats.txt
+	bedtools merge -i <(cat "$Ref_Suffix"_selfblastresults.txt | awk '{print $1"\t"$8-1"\t"$9}' | tail -n+2 | sort -nk2,2) >"$Ref_Suffix".Repeats.txt
 	head "$Ref_Suffix".Repeats.txt #Just for reference, if the bed file is formed
 	echo ""
 
