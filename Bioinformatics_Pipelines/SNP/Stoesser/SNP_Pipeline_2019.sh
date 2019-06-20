@@ -5,7 +5,7 @@ echo "Present working directory: $Directory"
 
 Gubbins_Suffix="CCGroup10_ST131_65_Samples"
 
-Reference=`echo "NC_013654.fasta"` ##Must be in the directory
+Reference=`echo "ENT256_Nanopore.fasta"` ##Must be in the directory
 Ref_Suffix=`echo "$Reference" | sed 's/.fasta//g'`
 
 SampleList="Samples2Process.list" ## Must be in the directory
@@ -18,7 +18,8 @@ fasta_formatter -i $Reference -o "$Ref_Suffix".oneline.fasta -w 0
 echo "The Reference from now on is: $Ref_Suffix.oneline.fasta"
 echo "The Reference Suffix is: $Ref_Suffix"
 	echo ""
-
+: <<'END_COMMENT'
+END_COMMENT
 # Removing unwanted spaces
 	sed -i 's/ /_/g' "$Ref_Suffix".oneline.fasta 
 	sed -i 's/=/_/g' "$Ref_Suffix".oneline.fasta 
@@ -95,17 +96,19 @@ echo "The Reference Suffix is: $Ref_Suffix"
 	date
 	echo ""
 
-# High Quality SNP as mentioned in Stoesser ST131 Paper
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf; done
+
+# High Quality SNP as mentioned in Stoesser ST131 Paper - Also ignore INDEL calling (takes time)
+
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf; done
 	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP8/31: High Quality VCF files are generated! Next is Low Quality VCF file generation"
 	date
 	echo ""
 
-# Low Quality SNP as mentioned in Stoesser ST131 Paper
+# Low Quality SNP as mentioned in Stoesser ST131 Paper - Also ignore INDEL calling (takes time)
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf; done
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf ; done
 	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP9/31: Low Quality VCF files are generated! "
 	date
@@ -326,4 +329,3 @@ cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/BEAST_Dat
 
 
 # time /storage/apps/beast/bin/beast -beagle -beagle_SSE EColi_Stoesser_CCgroup10_BEAST_withDates.xml
-
