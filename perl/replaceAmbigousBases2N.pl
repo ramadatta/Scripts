@@ -1,4 +1,8 @@
+#Biostar forum: https://www.biostars.org/p/385839/#386131
+
+
 open FH,"alignment_file.fasta";
+
 @GapstoN=`cat *.vcf | grep -v "#" | sort -nk2,2 | sed "/^\$/d" | awk '{print \$2}'`;
 
 %ConvrtGap2N=();
