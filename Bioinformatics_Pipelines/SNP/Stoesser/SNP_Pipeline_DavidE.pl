@@ -3,7 +3,7 @@
 Directory=`pwd`
 echo "Present working directory: $Directory"
 
-Gubbins_Suffix="CCGroup10_ST131_65_Samples"
+Gubbins_Suffix="CCGroup10_ST131_95_Samples"
 
 Reference=`echo "ENT256_Nanopore.fasta"` ##Must be in the directory
 Ref_Suffix=`echo "$Reference" | sed 's/.fasta//g'`
@@ -17,9 +17,10 @@ fasta_formatter -i $Reference -o "$Ref_Suffix".oneline.fasta -w 0
 
 echo "The Reference from now on is: $Ref_Suffix.oneline.fasta"
 echo "The Reference Suffix is: $Ref_Suffix"
-	echo ""
+echo ""
+
 : <<'END_COMMENT'
-END_COMMENT
+
 # Removing unwanted spaces
 	sed -i 's/ /_/g' "$Ref_Suffix".oneline.fasta 
 	sed -i 's/=/_/g' "$Ref_Suffix".oneline.fasta 
@@ -189,6 +190,8 @@ END_COMMENT
 
 # Format the consensus to single-line fasta
 for d in $(ls *_consensus.fasta | sed 's/.fasta//g');do echo "$d"; fasta_formatter -i $d.fasta -o $d.oneline.fasta -w 0; done
+: <<'END_COMMENT'
+
 
 ###################---------------------------DAVID EYER'S METHOD FOR PADDING AND BEAST------------------------##################################
 
@@ -207,12 +210,14 @@ cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/replaceAm
 # Unzip the vcf files from previous step into DavidE folder
 for d in $(ls *_High_Confidence_SNP.vcf.gz | sed 's/_High_Confidence_SNP.vcf.gz//g'); do gunzip -c "$d"_High_Confidence_SNP.vcf.gz >DavidE_Method/"$d"_High_Confidence_SNP.vcf; done
 
+END_COMMENT
 	cd DavidE_Method
+: <<'END_COMMENT'
 
 # Copy the consensus sequences and all the sorted bam files of each sample to the StoesserN_Method directory
 	
-	ln -sf ../*_consensus.fasta . ## For calculating covered genomic regions
-	ln -sf ../*_consensus.oneline.fasta . ##For subsequent analysis
+	ln -sf ../*_consensus.fasta .
+	ln -sf ../*_consensus.oneline.fasta .
 	ln -sf ../*_sorted.bam .
 	ln -sf ../"$Ref_Suffix".oneline.fasta .
 
@@ -222,102 +227,118 @@ for d in $(ls *_High_Confidence_SNP.vcf.gz | sed 's/_High_Confidence_SNP.vcf.gz/
 	wait $(jobs -rp)
 	
 	bedtools merge -i <(cat *bed | sort -nk2,2) >Bases2RefBase_allSamples_mergedInterval.bed
-
+	
 ## Replace Repeats which were masked before with "N" regions to Reference Base in the particular position
 
-for d in $(ls *_"$Ref_Suffix"_consensus.fasta); do echo $d; time perl replace_RepeatNs.pl $d $Ref_Suffix.oneline.fasta "$Ref_Suffix"_consensus.oneline.fasta; done
-
+for d in $(ls *_"$Ref_Suffix"_consensus.oneline.fasta); do echo $d; time perl replace_RepeatNs_DE.pl $d $Ref_Suffix.oneline.fasta "$Ref_Suffix"_consensus.oneline.fasta & done
+wait $(jobs -rp)
+	echo "-------------------------------->STEP20/31: Replace Repeats which were masked before with "N" regions to Reference Base in the particular position! "
+	date
+	echo ""
 ## Find Zerocoverage regions from BAM and make bed file for each sample using bedtools command
 
-for d in $(ls *_"$Ref_Suffix"_consensus.oneline.fasta | sed "s/_"$Ref_Suffix"_consensus.oneline.fasta//g"); do echo $d; bedtools genomecov -ibam "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam -bga | awk '$4==0' | cut -f1,2,3 -d "  "  >"$d"_ZeroCov_interval.bed & done
+#for d in $(ls *_"$Ref_Suffix"_consensus.oneline.fasta | sed "s/_"$Ref_Suffix"_consensus.oneline.fasta//g"); do echo $d; bedtools genomecov -ibam "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam -bga | awk '$4==0' | cut -f1,2,3 -d "	"  >"$d"_ZeroCov_interval.bed & done
+	#wait $(jobs -rp)
+	#echo "-------------------------------->STEP21/31: Find Zerocoverage regions from BAM and make bed file for each sample using bedtools command! "
+	#date
+	#echo ""
 
 ## Convert the Zerocoverage region into a gap first, so that when we apply David's method next, as a first step we convert the "-" to N, then remaining "-" to Reference Base at the particular position
 
-for d in $(ls *_"$Ref_Suffix"_consensus.oneline.fasta | sed "s/_"$Ref_Suffix"_consensus.oneline.fasta//g"); do echo $d; time bedtools maskfasta -fi "$d"_"$Ref_Suffix"_RepeatNs_converted_to_RefBase.fasta -bed "$d"_ZeroCov_interval.bed -fo "$d"_ZeroCovCol_N.fasta -mc - & done
+for d in $(ls *_"$Ref_Suffix"_consensus.oneline.fasta | sed "s/_"$Ref_Suffix"_consensus.oneline.fasta//g"); do echo $d; time bedtools maskfasta -fi "$d"_RepeatNs_converted_to_RefBase.fasta -bed "$d"_ZeroCov_interval.bed -fo "$d"_ZeroCovCol_N.fasta -mc - & done
+	wait $(jobs -rp)
+	echo "-------------------------------->STEP22/31: Converted the Zerocoverage region into a gap first,! "
+	date
+	echo ""
 
 ## Change the sequence names with the file names
 
-$ for FILE in *_ZeroCovCol_N.fasta; do awk '/^>/ {gsub(/.fa(sta)?$/,"",FILENAME);printf(">%s\n",FILENAME);next;} {print}' $FILE > changed_${FILE}; done
+for FILE in *_ZeroCovCol_N.fasta; do awk '/^>/ {gsub(/.fa(sta)?$/,"",FILENAME);printf(">%s\n",FILENAME);next;} {print}' $FILE > changed_${FILE}; done
 
 ## Make an alignment file 
 
-$ cat ../"$Ref_Suffix".oneline.fasta changed* >PreDavid_Alignment_withRef_ZC_withGaps.fasta
+cat ../"$Ref_Suffix".oneline.fasta changed* >PreDavid_Alignment_withRef_ZC_withGaps.fasta
+	echo "-------------------------------->STEP23/31: Made an alignment file ! "
+	date
+	echo ""
 
 #Apply David's method - replace the gaps in the columns with N if the column has a SNP, else if it is just a gap with NO SNPs in the column then replaced with Reference base at that particular position
 
-$ time perl replaceAmbigousBases2N.pl "$Ref_Suffix".oneline.fasta #generates "PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta" file
-  echo "-------------------------------->STEP24/31: Pre_GUBBINS alignment file is ready! "
+time perl replaceAmbigousBases2N.pl "$Ref_Suffix".oneline.fasta #generates "PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta" file
+  echo "-------------------------------->STEP24/31: David's method: PreGubbins file is ready! "
 	date
 	echo ""
   
  #Changing Pre-Gubbins Filename
- mv PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta "$Gubbins_Suffix"_PreGubbins_Alignment.fasta
+ mv PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta "$Gubbins_Suffix"_PreGubbins_Alignment_withRef.fasta
+	sed -i 's/=/_/g' "$Gubbins_Suffix"_PreGubbins_Alignment_withRef.fasta
 
 # Gubbins - Recombination filtering 
 
-	run_gubbins.py --prefix postGubbins_"$Gubbins_Suffix" --threads $GubbinsSLOTS "$Gubbins_Suffix"_PreGubbins_Alignment_withRef.fasta --verbose
-	echo "-------------------------------->STEP24/31: GUBBINS alignment file is ready! "
+	run_gubbins.py --prefix postGubbins_"$Gubbins_Suffix" --threads "$GubbinsSLOTS" "$Gubbins_Suffix"_PreGubbins_Alignment_withRef.fasta --verbose
+	echo "-------------------------------->STEP25/31: GUBBINS alignment done! "
 	date
 	echo ""
 
 # Mask the recombinant regions
 
-	maskrc-svg.py --aln "$Gubbins_Suffix"_PreGubbins_withRef.fasta --out "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked.fasta --gubbins postGubbins_"$Gubbins_Suffix"
-	echo "-------------------------------->STEP25/31: Masked Recombination Regions! "
+	maskrc-svg.py --aln "$Gubbins_Suffix"_PreGubbins_Alignment_withRef.fasta --out "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked.fasta --gubbins postGubbins_"$Gubbins_Suffix"
+	echo "-------------------------------->STEP26/31: Masked Recombination Regions! "
 	date
 	echo ""
-
+END_COMMENT
 #--------(*:)*Preparing for the BEAST input---------(*:)*#
 
 # Now to submit the padded alignment to BEAST, remove all the gap "?" cols from the "$Gubbins_Suffix"_Stoesser_PreGubbins_withRef_Recom_masked.fasta
 
-	sed -i 's/?/-/g' "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked.fasta
-	trimal -in "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked.fasta -out "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked_trimal.fasta -nogaps
-	echo "-------------------------------->STEP26/31: Trimmed Recombination Regions "
+	sed -i 's/?/-/g' "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked.fasta
+	trimal -in "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked.fasta -out "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked_trimal.fasta -nogaps
+	echo "-------------------------------->STEP27/31: Trimmed Recombination Regions "
 	date
 	echo ""
+
 
  
 # Count ATGC in the Pre-Gubbins Reference and Post Gubbins Reference, add that many number of A's, T's, G's, C's into each of the sample file and feed to BEAST
 
-	for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}' >Invariant_Sites_CountATGC.txt
+	for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}' >Invariant_Sites_CountATGC.txt
 
-	cmd=`for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}'`
-	echo "-------------------------------->STEP27/31: Counting "
+	cmd=`for i in {1..1}; do faidx -i nucleotide ../$Ref_Suffix.oneline.fasta | tail -n+2; faidx -i nucleotide "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked_trimal.fasta | head -2 | tail -n+2; done | paste - - | awk '{print "./generateInvariantSites.sh",$4-$12,$5-$13,$6-$14,$7-$15}'`
+	echo "-------------------------------->STEP28/31: Counting "
 	date
 	echo ""
 
 # Append the above number of ATGC's for each of the sequence and provide to BEAST. 
 	echo "testing-->$cmd"
 	`$cmd >invariantSites.txt`
-	echo "-------------------------------->STEP28/31: Generated Invariant Sites file!! "
+	echo "-------------------------------->STEP29/31: Generated Invariant Sites file!! "
 	date
 	echo ""
 
 # Removing the reference from the fasta file to input to BEAST #ids2Remove has reference sequence ID
 
 	grep  '>' "$Ref_Suffix".oneline.fasta | tr -d '>' | tr '=' '_' | tr -d ',' >ids2Remove.txt	
-	awk 'BEGIN{while((getline<"ids2Remove.txt")>0)l[">"$1]=1}/^>/{f=!l[$1]}f' "$Gubbins_Suffix"_PreGubbins_withRef_Recom_masked_trimal.fasta >"$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal.fasta
-	echo "-------------------------------->STEP29/31: Removed Reference Sequence for BEAST ANALYSIS!! "
+	awk 'BEGIN{while((getline<"ids2Remove.txt")>0)l[">"$1]=1}/^>/{f=!l[$1]}f' "$Gubbins_Suffix"_PostGubbins_Alignment_withRef_Recom_masked_trimal.fasta >"$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal.fasta
+	echo "-------------------------------->STEP30/31: Removed Reference Sequence for BEAST ANALYSIS!! "
 	date
 	echo ""
 
 # Oneline fasta format
 
-	fasta_formatter -i "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal.fasta -o "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal.oneline.fasta -w 0
+	fasta_formatter -i "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal.fasta -o "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal.oneline.fasta -w 0
 
 # Append the invariant sites (ARGUMENTS for perl script: ARG1 invariant site, ARG2 fasta to append invariant sites, ARG3 suffix for the output file)
 
-	perl AppendInvariantSites.pl invariantSites.txt "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal.oneline.fasta "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal
+	perl AppendInvariantSites.pl invariantSites.txt "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal.oneline.fasta "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal
 	#/storage/data/software/standard-RAxML/standard-RAxML-master/fasta2relaxedPhylip.pl -f "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal_InvarSitesAppend.fasta -o "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal_InvarSitesAppend.phy
-	sed -i 's/_ZeroCovCol_N//g' "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal_InvarSitesAppend.fasta
-	echo "-------------------------------->STEP30/31: Appended Invariant Sites for BEAST ANALYSIS!! "
+	sed -i 's/_ZeroCovCol_N.*//g' "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal_InvarSitesAppend.fasta
+	echo "-------------------------------->STEP31/31: Appended Invariant Sites for BEAST ANALYSIS!! "
 	date
 	echo ""
 
 # Append BEAST dates 
 
-	perl BEAST_DatesHeader.pl "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal_InvarSitesAppend.fasta "$Gubbins_Suffix"_PreGubbins_withoutRef_Recom_masked_trimal
+	perl BEAST_DatesHeader.pl "$Gubbins_Suffix"_PostGubbins_Alignment_withoutRef_Recom_masked_trimal_InvarSitesAppend.fasta "$Gubbins_Suffix"_PostGubbins_withoutRef_Recom_masked_trimal
 	echo "-------------------------------->STEP31/31: Alignment for BEAST tool is generated!! Please Proceed with BEAuti/BEAST "
 	date
 	echo ""
