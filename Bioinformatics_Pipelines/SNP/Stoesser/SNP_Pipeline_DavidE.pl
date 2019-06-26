@@ -211,9 +211,17 @@ for d in $(ls *_High_Confidence_SNP.vcf.gz | sed 's/_High_Confidence_SNP.vcf.gz/
 
 # Copy the consensus sequences and all the sorted bam files of each sample to the StoesserN_Method directory
 	
-	ln -sf ../*_consensus.oneline.fasta .
+	ln -sf ../*_consensus.fasta . ## For calculating covered genomic regions
+	ln -sf ../*_consensus.oneline.fasta . ##For subsequent analysis
 	ln -sf ../*_sorted.bam .
 	ln -sf ../"$Ref_Suffix".oneline.fasta .
+
+# If there is zero coverage region, generate ZeroCov_interval.bed for each file, then merge all the intervals from all the samples. The intervals are converted to Ns
+
+	for d in $(ls *_"$Ref_Suffix"_consensus.fasta | sed "s/_"$Ref_Suffix"_consensus.fasta//g"); do echo $d; bedtools genomecov -ibam "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam -bga | awk '$4==0' | cut -f1,2,3 -d "	"  >"$d"_ZeroCov_interval.bed & done
+	wait $(jobs -rp)
+	
+	bedtools merge -i <(cat *bed | sort -nk2,2) >Bases2RefBase_allSamples_mergedInterval.bed
 
 ## Replace Repeats which were masked before with "N" regions to Reference Base in the particular position
 
@@ -233,11 +241,11 @@ $ for FILE in *_ZeroCovCol_N.fasta; do awk '/^>/ {gsub(/.fa(sta)?$/,"",FILENAME)
 
 ## Make an alignment file 
 
-$ cat ../ENT256_Nanopore.oneline.fasta changed* >PreDavid_Alignment_withRef_ZC_withGaps.fasta
+$ cat ../"$Ref_Suffix".oneline.fasta changed* >PreDavid_Alignment_withRef_ZC_withGaps.fasta
 
 #Apply David's method - replace the gaps in the columns with N if the column has a SNP, else if it is just a gap with NO SNPs in the column then replaced with Reference base at that particular position
 
-$ time perl replaceAmbigousBases2N.pl ENT256_Nanopore.oneline.fasta #generates "PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta" file
+$ time perl replaceAmbigousBases2N.pl "$Ref_Suffix".oneline.fasta #generates "PreGubbins_Alignment_SNP_Gaps_converted_to_N_and_RefBase.fasta" file
   echo "-------------------------------->STEP24/31: Pre_GUBBINS alignment file is ready! "
 	date
 	echo ""
