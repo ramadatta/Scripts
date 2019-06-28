@@ -1,5 +1,5 @@
-#Author: David Eyre
-#Generate Variable Sites from an Alignment file
+# Author: David Eyre
+# Generate Variable SNP Sites from an Alignment file
 
 
 from Bio import SeqIO
