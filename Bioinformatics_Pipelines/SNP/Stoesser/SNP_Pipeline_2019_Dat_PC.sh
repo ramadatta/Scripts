@@ -73,7 +73,7 @@ END_COMMENT
 # Reference Set Sequences
 
 	mkdir Raw_Data
-	for d in $(cat $SampleList); do echo $d; cp -R /storage/data/DATA4/analysis/2CPE_Tranmission_Paper/CPE_LocalTranmission_PlasmidSeeker/Reference_Set/$d Raw_Data/; done
+	for d in $(cat $SampleList); do echo $d; cp -R /data01/Raw_Data/CPE_Tranmission_1324/Reference_Set/$d Raw_Data/; done
 	echo ""
 	echo "-------------------------------->STEP5/31: Copied samples into the Raw Data folder"
 	date	
