@@ -59,8 +59,8 @@ END_COMMENT
 
 # STAMPY Mapping the samples reads to Reference genome - Preparing the index for the Reference
 
-	/storage/apps/stampy-1.0.32/stampy.py -G "$Ref_Suffix"_hard_masked.DB "$Ref_Suffix"_hard_masked.fasta
- 	/storage/apps/stampy-1.0.32/stampy.py -g "$Ref_Suffix"_hard_masked.DB -H "$Ref_Suffix"_hard_masked.DB
+	stampy.py -G "$Ref_Suffix"_hard_masked.DB "$Ref_Suffix"_hard_masked.fasta
+ 	stampy.py -g "$Ref_Suffix"_hard_masked.DB -H "$Ref_Suffix"_hard_masked.DB
 	echo ""
 	echo "-------------------------------->STEP3/31: Created STAMPY index for the Masking Reference for "$Ref_Suffix"_hard_masked.fasta"
 	date
@@ -90,7 +90,7 @@ END_COMMENT
 	echo ""
 # Create and Sort BAM from SAM files
 
-	for d in $(ls *_bwa.sam | sed 's/.sam//g'); do echo $d; time /storage/apps/samtools-0.1.18/samtools view -bS "$d".sam | /storage/apps/samtools-0.1.18/samtools sort - "$d"_sorted & done 
+	for d in $(ls *_bwa.sam | sed 's/.sam//g'); do echo $d; time samtools view -bS "$d".sam | samtools sort - "$d"_sorted & done 
 	wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP7/31: Sorting the BAM files is done!!"
 	date
@@ -100,7 +100,7 @@ END_COMMENT
 
 # High Quality SNP as mentioned in Stoesser ST131 Paper - Also ignore INDEL calling (takes time)
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf; done
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -E -M0 -Q25 -q30 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_HQ.vcf; done
 	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP8/31: High Quality VCF files are generated! Next is Low Quality VCF file generation"
 	date
@@ -108,7 +108,7 @@ END_COMMENT
 
 # Low Quality SNP as mentioned in Stoesser ST131 Paper - Also ignore INDEL calling (takes time)
 
-	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time /storage/apps/samtools-0.1.18/samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf ; done
+	for d in $(ls *_sorted.bam | sed 's/_mapped_.*_stampy_bwa_sorted.bam//g'); do echo "$d"; time samtools mpileup -I -g -f "$Ref_Suffix"_hard_masked.fasta -B -M0 -Q0 -q0 -m2 -D -S "$d"_mapped_"$Ref_Suffix"_stampy_bwa_sorted.bam | /storage/apps/samtools-0.1.18/bcftools/bcftools view -Nvcg - > "$d"_LQ.vcf ; done
 	#wait $(jobs -rp) ## This command will allow the job to finish and after all the jobs are completed, then moves on to next job
 	echo "-------------------------------->STEP9/31: Low Quality VCF files are generated! "
 	date
@@ -116,12 +116,12 @@ END_COMMENT
 
 # Ignore INDEL Regions from VCF and also ignore bases with "N" in the reference - Working!!!
 
-	for d in $(ls *_HQ.vcf | sed 's/_HQ.vcf//g'); do echo $d; time /storage/apps/samtools-0.1.18/bcftools/bcftools view -INS "$d"_HQ.vcf >"$d"_HQ_SNP.vcf; done
+	for d in $(ls *_HQ.vcf | sed 's/_HQ.vcf//g'); do echo $d; time bcftools/bcftools view -INS "$d"_HQ.vcf >"$d"_HQ_SNP.vcf; done
 	echo "-------------------------------->STEP10/31: INDELs are removed from HQ.vcf! "
 	date
 	echo ""
 
-	for d in $(ls *_LQ.vcf | sed 's/_LQ.vcf//g'); do echo $d; time /storage/apps/samtools-0.1.18/bcftools/bcftools view -INS "$d"_LQ.vcf >"$d"_LQ_SNP.vcf; done
+	for d in $(ls *_LQ.vcf | sed 's/_LQ.vcf//g'); do echo $d; time bcftools view -INS "$d"_LQ.vcf >"$d"_LQ_SNP.vcf; done
 	echo "-------------------------------->STEP11/31: INDELs are removed from LQ.vcf! "
 	date
 	echo ""
@@ -191,10 +191,10 @@ END_COMMENT
 
 ##########################################################	
 
-cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/replace_RepeatNs.pl StoesserN_Method/replace_RepeatNs.pl
-cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/generateInvariantSites.sh  StoesserN_Method/generateInvariantSites.sh 
-cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/AppendInvariantSites.pl StoesserN_Method/AppendInvariantSites.pl
-cp /storage/data/DATA4/analysis/2_CPE_Tranmission_SNP_pipeline/scripts/BEAST_DatesHeader.pl StoesserN_Method/BEAST_DatesHeader.pl
+cp /home/prakki/sw/CPE_Tranmission_Pipeline_2019_scripts/replace_RepeatNs.pl StoesserN_Method/replace_RepeatNs.pl
+cp /home/prakki/sw/CPE_Tranmission_Pipeline_2019_scripts/generateInvariantSites.sh  StoesserN_Method/generateInvariantSites.sh 
+cp /home/prakki/sw/CPE_Tranmission_Pipeline_2019_scripts/AppendInvariantSites.pl StoesserN_Method/AppendInvariantSites.pl
+cp /home/prakki/sw/CPE_Tranmission_Pipeline_2019_scripts/BEAST_DatesHeader.pl StoesserN_Method/BEAST_DatesHeader.pl
 
 #########################################################
 	
