@@ -1,4 +1,9 @@
-##This script will check from Top_plasmid_W-score.txt, if
+
+
+##This script will check from Top_plasmid_W-score.txt and more stringent in assigning plasmids than simple W_score. 
+
+# A plasmid is assigned only if:
+
 #1) the top hit has kcov>95 and qcov > 0.95 
 #2) if the criteria 1, does not satisfy then again check if there is any top hit has kcov>90 and qcov > 0.9
 #3) if the criteria 2, does not satisfy then again check if there is any tophit with qcov > 0.9
