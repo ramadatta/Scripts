@@ -1,3 +1,4 @@
+## This shell is needed to be run of after Plasmidseeker_wrapper.pl is finished running
 
 for directory in $(ls -1d */); do 
 
