@@ -1,6 +1,4 @@
-## This Plasmidseeker_pull_AllPlasmids_v11_OC.pl script is latest plasmidseeker script. 
-
-To run just type: time perl Plasmidseeker_pull_AllPlasmids_v11_OC.pl 
+## This Plasmidseeker_pull_AllPlasmids_v9.pl script is latest plasmidseeker script. To run just type: time perl Plasmidseeker_pull_AllPlasmids_v9.pl 
 
 ## Prior to running the script, the working directory should contain a seperate folder for each sample with fastq files (fastq.gz or fastq) files, fasta file, contigSeq file (cp gene containing contig)
 
@@ -96,7 +94,9 @@ print "$qlen";
 @Putative_Plasmids=`ls blastdbcmd_seq*`;
 #print @Putative_Plasmids;
 `rm Overlapping_Coeff.txt`;
+`rm *_clustering_commands.sh`;
 
+open PARALLEL,">>$tmp\_clustering_commands.sh"; # Understand cannot run the overlap coefficient script in parallel
 foreach $putative (@Putative_Plasmids)
 {
 chomp($putative);
@@ -107,13 +107,21 @@ chomp($putative_len);
 	if($qlen<=$putative_len)
 	{
 	print "$qlen<=$putative_len\n";
-	system("perl ./clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt");
+	#system("perl /storage/apps/PlasmidSeeker/clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt");
+	print PARALLEL"perl /storage/apps/PlasmidSeeker/clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt\n";
 	}
 	else
 	{
 		next;
 	}
 }
+
+close(PARALLEL);
+
+print "Checking Overlap Coefficient between Plasmids using GNU-Parallel\n";
+$parallel_cmds=`ls *_clustering_commands.sh`;
+chomp($parallel_cmds);
+system("time parallel -j 48 < $parallel_cmds");
 
 `sed 's/ /_/g' *_plasmidseeker_results.txt >tmp_ps_results.txt`;
 system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 @);
@@ -189,7 +197,9 @@ print "$qlen";
 @Putative_Plasmids=`ls blastdbcmd_seq*`;
 #print @Putative_Plasmids;
 `rm Overlapping_Coeff.txt`;
+`rm *_clustering_commands.sh`;
 
+open PARALLEL,">>$tmp\_clustering_commands.sh"; # Running overlap coefficient in parallel
 foreach $putative (@Putative_Plasmids)
 {
 chomp($putative);
@@ -200,13 +210,20 @@ chomp($putative_len);
 	if($qlen<=$putative_len)
 	{
 	print "$qlen<=$putative_len\n";
-	system("perl ./clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt");
+	#system("perl /storage/apps/PlasmidSeeker/clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt");
+	print PARALLEL"perl /storage/apps/PlasmidSeeker/clustering_script.pl $CP_containing_Contig_file $putative >>Overlapping_Coeff.txt\n";
 	}
 	else
 	{
 		next;
 	}
 }
+
+close(PARALLEL);
+print "Checking Overlap Coefficient between Plasmids using GNU-Parallel\n";
+$parallel_cmds=`ls *_clustering_commands.sh`;
+chomp($parallel_cmds);
+system("time parallel -j 48 < $parallel_cmds");
 
 `sed 's/ /_/g' *_plasmidseeker_results.txt >tmp_ps_results.txt`;
 system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 @);
@@ -225,4 +242,5 @@ chdir "$Final_Directory";
 
 
 
+}
 }
