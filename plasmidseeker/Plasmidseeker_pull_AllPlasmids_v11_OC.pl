@@ -124,7 +124,9 @@ chomp($parallel_cmds);
 system("time parallel -j 48 < $parallel_cmds");
 
 `sed 's/ /_/g' *_plasmidseeker_results.txt >tmp_ps_results.txt`;
-system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 @);
+system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 -nrk5,5  >CPContig_Plasmid_KCov_OCoef.txt @);
+
+system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 -nrk5,5 | head -1 >Tophit_CPContig_Plasmid_KCov_OCoef.txt @);
 				close(PLASMID_BLAST);
 				close(FINAL_PLASMID);
 				close(FINAL_PLASMID2);
@@ -226,7 +228,9 @@ chomp($parallel_cmds);
 system("time parallel -j 48 < $parallel_cmds");
 
 `sed 's/ /_/g' *_plasmidseeker_results.txt >tmp_ps_results.txt`;
-system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 @);
+system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 -nrk5,5  >CPContig_Plasmid_KCov_OCoef.txt @);
+
+system( q@for d in $(cat Overlapping_Coeff.txt | awk '{print $3}' | sed 's/gbk://g' | sed 's/[A-Z]*_*[A-Z]*\([0-9]\{6,8\}\.[0-9]\{1,\}\_\)//g'); do grep -m1 "$d" Overlapping_Coeff.txt; grep -m1 "$d" tmp_ps_results.txt; echo ""; done | sed -e '/^$/d' -e 's/%//g' | paste - - | awk '{print $1,$2,$3,$5,$6,$7,$4}' | sort -nrk7,7 -nrk6,6 -nrk5,5 | head -1 >Tophit_CPContig_Plasmid_KCov_OCoef.txt @);
 
 				close(PLASMID_BLAST);
 				close(FINAL_PLASMID);
