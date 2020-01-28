@@ -39,8 +39,6 @@ open FH,"$filename";
 	#print "$tmp";
 	chomp($tmp);
 	($v1,$v2)=(@{$tmp}[0],@{$tmp}[1]);
-	#($v1,$v2)=split(" ",@{$tmp}[1],);
-	#print "V1 is $v1, V2 is $v2\n";
 	push(@temp,"$v1","$v2");
 	}
 
