@@ -58,7 +58,7 @@ $i=1;
 
 print "-----Cluster:".$i++."-------\n$_\n" for 
     sort { length($b) <=> length($a) || $a cmp $b }
-    map {join( "\n",  @$_)}  
+    map {join( "\n",  sort(@$_) )}  
     $g->connected_components;
 	
 	
