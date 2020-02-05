@@ -6,6 +6,8 @@
 
 # Usage: perl circSeq_DupSeq_remover.sh
 
+# NOTE: you need to have the ClustrPairs.pl script in the same folder (available here: https://github.com/ramadatta/Scripts/blob/master/perl/ClustrPairs_v3.pl)
+
 #!/usr/bin/bash
 
 #take the fasta file from the terminal
@@ -56,7 +58,7 @@ fgrep -A1 -w -f <(fgrep -v -f <(perl ClustrPairs_v3.pl "$prefix"_DuplicatePairs_
 #fgrep extract unique sequences <(fgrep extract the unique headers  <(find the duplicate and form clusters| grep -v "^-") "$prefix".oneline.fasta | fgrep '>') "$prefix".oneline.fasta | sed 's/-//g' | sed '/^$/d' >"$prefix".unique.fasta
 
 #create a fasta file with the representative fasta sequence for each of the cluster
-fgrep -w -A1 -f <(sed -e /^gbk_NC/s/^/_1/ -e /^gbk_AC/s/^/_1/ -e /^gbk_NG/s/^/_1/  -e /^gbk_NT/s/^/_1/  -e /^gbk_NW/s/^/_1/  -e /^gbk_NZ/s/^/_1/  -e /^gbk_NM/s/^/_1/  -e /^gbk_NR/s/^/_1/  -e /^gbk_XM/s/^/_1/  -e /^gbk_XR/s/^/_1/ -e /^gbk_CP/s/^/_2/  <(perl ClustrPairs_v3.pl *_DuplicatePairs_Plausible.txt) | sed '/^gbk_/s/^/_3/' | awk -v OFS='\t' 'match($0,/.*gbk\_.*\..*__/){print $0,substr($0,RSTART,RLENGTH)};match($0,/.*Cluster.*/){print $0}' | awk 'BEGIN { id=2000; }{if ( NF == 2 ){print id$(NF-1);}else{id--;print id"_0"$NF;id--;}}' | sort -rn | sed 's/^...._.//g' | fgrep -A1 'Cluster' | sed 's/^--//g' | sed '/^$/d' | paste - - | awk '{print $2}') "$prefix".oneline.fasta >"$prefix".dupsRepresentative.fasta
+fgrep -w -A1 -f <(sed -e /^gbk_NC/s/^/_1/ -e /^gbk_AC/s/^/_1/ -e /^gbk_NG/s/^/_1/  -e /^gbk_NT/s/^/_1/  -e /^gbk_NW/s/^/_1/  -e /^gbk_NZ/s/^/_1/  -e /^gbk_NM/s/^/_1/  -e /^gbk_NR/s/^/_1/  -e /^gbk_XM/s/^/_1/  -e /^gbk_XR/s/^/_1/ -e /^gbk_CP/s/^/_2/  <(perl ClustrPairs_v3.pl *_DuplicatePairs_Plausible.txt) | sed '/^gbk_/s/^/_3/' | awk -v OFS='\t' 'match($0,/.*gbk\_.*\..*__/){print $0,substr($0,RSTART,RLENGTH)};match($0,/.*Cluster.*/){print $0}' | awk 'BEGIN { id=2000; }{if ( NF == 2 ){print id$(NF-1);}else{id++;print id"_0"$NF;id++;}}' | sort -nk1,1 | sed 's/^...._.//g' | fgrep -A1 'Cluster' | sed 's/^--//g' | sed '/^$/d' | paste - - | awk '{print $2}') "$prefix".oneline.fasta >"$prefix".dupsRepresentative.fasta
 
 
 ##Append both of the fasta files
