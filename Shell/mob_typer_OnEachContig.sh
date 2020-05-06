@@ -1,3 +1,11 @@
+# This bash script will run mob_typer on each of the contig in the assembly file.
+
+# Author: Prakki Sai Rama Sridatta
+
+# May 06, 2020
+
+#!/bin/bash
+
 for filename in $(ls *.fasta); do 
 
 echo $filename; #Contains fasta filename
