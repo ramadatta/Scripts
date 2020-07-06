@@ -62,3 +62,14 @@ https://stackoverflow.com/questions/17291995/push-existing-project-into-github
 # git push origin master
 
 #To push without conflicts both github and local should have same content.
+
+# To delete a duplpicate directory
+# In the command-line, navigate to your local repository.
+# Ensure you are in the default branch:
+#   git checkout master
+# The rm -r command will recursively remove your folder:
+#   git rm -r folder-name
+# Commit the change:
+#   git commit -m "Remove duplicated directory"
+# Push the change to your remote repository:
+#   git push origin master
