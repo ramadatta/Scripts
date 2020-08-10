@@ -73,3 +73,10 @@ https://stackoverflow.com/questions/17291995/push-existing-project-into-github
 #   git commit -m "Remove duplicated directory"
 # Push the change to your remote repository:
 #   git push origin master
+
+
+##Just updating the repository online
+git add .
+git commit -m "my changes" 
+git remote add origin https://github.com/zinmyoswe/React-and-Django-Ecommerce.git
+git push -u origin master
