@@ -80,3 +80,12 @@ git add .
 git commit -m "my changes" 
 git remote add origin https://github.com/zinmyoswe/React-and-Django-Ecommerce.git
 git push -u origin master
+
+
+
+## TO delete a folder
+git rm -rf folder
+git add .
+git commit -a -m "removed folder"
+git push origin master
+
