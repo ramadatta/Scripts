@@ -89,3 +89,5 @@ git add .
 git commit -a -m "removed folder"
 git push origin master
 
+#inst and extdata folders in R Packaging
+#https://stackoverflow.com/questions/13463103/inst-and-extdata-folders-in-r-packaging
