@@ -4,6 +4,10 @@
 
 # May 06, 2020
 
+# Usage
+# Go to the folder location with .fasta files
+# ./mob_typer_OnEachContig.sh
+
 #!/bin/bash
 
 for filename in $(ls *.fasta); do 
