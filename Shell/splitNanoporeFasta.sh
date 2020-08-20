@@ -21,7 +21,7 @@ if [ "$1" == "-h" ]; then
   echo "ENT001_Contig2.fasta"
   echo "ENT001_Contig3.fasta"
   echo ""		
-  echo "Usage: ./splitNanoporeFasta.sh"
+  echo "Usage: ./splitNanoporeFasta.ah"
   exit 0
 fi
 
@@ -48,10 +48,10 @@ mkdir "$filebase"_Contigs;
 	sed -i 's/length=/len_/g' "$filebase"_renamed.fasta &
 	wait $(jobs -rp)
 
-	sed -i 's/_depth=.*_circular=true/_circ/g' "$filebase"_renamed.fasta &
+	sed -i 's/_circular=true/_circ/g' "$filebase"_renamed.fasta &
 	wait $(jobs -rp)
 
-	sed -i 's/_depth=.*//g' "$filebase"_renamed.fasta &
+	sed -i 's/_depth=/_depth_/g' "$filebase"_renamed.fasta &
 	wait $(jobs -rp)
 
 	echo "Done with renaming $filebase.fasta"; 
