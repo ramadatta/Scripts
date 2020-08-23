@@ -1,0 +1,42 @@
+git clone https://github.com/your_username/bioconda-recipes.git
+cd bioconda-recipes
+git remote add upstream https://github.com/bioconda/bioconda-recipes.git
+
+
+cd bioconda-recipes/recipes/
+mkdir cpgeneprofiler
+cp meta.yaml cpgeneprofiler
+cp build.sh cpgeneprofiler
+
+https://bioconda.github.io/contributor/workflow.html
+
+ 1975  git checkout master
+ 1979  git pull upstream master
+ 1980  git push origin master
+ 1981  git checkout -b update_my_recipe
+ 1982  cd recipes
+ 1983  conda skeleton cran cpgeneprofiler
+ 1987  git add cpgeneprofiler
+ 1988  git diff
+ 1989  git status
+ 1992  git add cpgeneprofiler
+ 1993  git commit "adding cpgeneprofiler"
+ 1996  git push --set-upstream origin update_my_recipe
+
+
+$ git push --set-upstream origin update_my_recipe
+Username for 'https://github.com': ramadatta
+Password for 'https://ramadatta@github.com': 
+Counting objects: 5, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 843 bytes | 843.00 KiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0)
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+remote: 
+remote: Create a pull request for 'update_my_recipe' on GitHub by visiting:
+remote:      https://github.com/ramadatta/bioconda-recipes/pull/new/update_my_recipe
+remote: 
+To https://github.com/ramadatta/bioconda-recipes.git
+ * [new branch]          update_my_recipe -> update_my_recipe
+Branch 'update_my_recipe' set up to track remote branch 'update_my_recipe' from 'origin'.
