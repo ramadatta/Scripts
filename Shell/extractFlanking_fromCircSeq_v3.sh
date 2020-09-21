@@ -22,13 +22,13 @@ cat "$basename"_vs_NDM_blastresults.txt | awk '{print($1"\t"$8"\t"$9"\t"$NF"\t"$
 
 
 while read line; do 
-x="5000";
+x="5000"; # Flanking regions length
 echo $line; 
 contigName=`echo $line | awk '{print $1}'`; 
-qstart=`echo $line | awk '{print $2}'`;
-qend=`echo $line | awk '{print $3}'`;
+qstart=`echo $line | awk '{print $2}'`; # NDM gene start
+qend=`echo $line | awk '{print $3}'`; # NDM gene end
 slen=`echo $line | awk '{print $4}'`; #NDM gene length
-qlen=`echo $line | awk '{print $NF}'`; 
+qlen=`echo $line | awk '{print $NF}'`; # Length of the Input fasta sequence
 
 	if [ $qlen -gt $((slen+2*x)) ]; 
 		then 
