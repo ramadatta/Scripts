@@ -4,7 +4,7 @@ library(reshape2)
 
 
 ## Read in fasta file
-    data <- read.FASTA(file = "postGubbins.filtered_polymorphic_sites.fasta") # Read input multiple fasta file
+    data <- read.FASTA(file = "postGubbins.filtered_polymorphic_sites.fasta") # Read input multi fasta file generate from gubbins output
 
 ## Calculate the pair-wise distance
 
@@ -20,4 +20,4 @@ names(D_out_melt) <- c("Isolate1","Isolate2","SNPDiff")
 D_out_melt_sorted = arrange(D_out_melt, SNPDiff)
 #head(D_out_melt_sorted)
 
-write.csv(D_out_melt_sorted, "postGubbins.filtered_polymorphic_sites_melt_sorted.csv")
+write.csv(D_out_melt_sorted, "postGubbins.filtered_polymorphic_sites_melt_sorted.csv") # Output file
