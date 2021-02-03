@@ -1,0 +1,5 @@
+setwd("/home/Documents/test")
+library(reshape2)
+m1 <- read.csv("SNVinMatrix.csv")
+coldf <- setNames(melt(m1), c('sample1', 'sample2', 'SNPDiff'))
+write.csv(x = coldf,file = "converted_SNVinMatrix",row.names=FALSE)
