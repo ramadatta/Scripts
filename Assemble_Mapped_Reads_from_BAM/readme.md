@@ -1,3 +1,5 @@
+### Pipeline for Denovo Assembly, Order GenomeContigs by extracting fastq reads from a BAM file
+
 ##### Run SRST2 to generate sorted BAM file for the specific region "ICETn43716385"
 
 ```bash
